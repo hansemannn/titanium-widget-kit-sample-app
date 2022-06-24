@@ -1,0 +1,11 @@
+framework module TiWidgetkit {
+  umbrella header "TiWidgetkit.h"
+
+  export *
+  module * { export * }
+}
+
+module TiWidgetkit.Swift {
+    header "TiWidgetkit-Swift.h"
+    requires objc
+}

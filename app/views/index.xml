@@ -1,0 +1,7 @@
+<Alloy>
+	<NavigationWindow>
+		<Window title="Widget Kit Sample App">
+			<Button title="Save data to widget" onClick="saveData" />
+		</Window>
+	</NavigationWindow>
+</Alloy>

@@ -1,0 +1,19 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.1
+apiversion: 2
+architectures: arm64 x86_64
+description: titanium-widget-kit is a Swift based Titanium module.
+author: Hans Knoechel
+license: MIT
+copyright: Copyright (c) 2020 by Hans Knoechel
+
+# these should not be edited
+name: titanium-widget-kit
+moduleid: ti.widgetkit
+guid: 4806f1ee-d99b-44b5-9aa4-68c3955d97ce
+platform: iphone
+mac: false
+minsdk: 9.2.0
