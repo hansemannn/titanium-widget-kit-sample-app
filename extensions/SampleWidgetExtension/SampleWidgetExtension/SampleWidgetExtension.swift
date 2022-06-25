@@ -86,8 +86,25 @@ struct SampleWidgetExtension: Widget {
             SampleWidgetExtensionEntryView(entry: entry)
         }
         .configurationDisplayName("Ti Sample Widget")
+        .supportedFamilies(supportedWidgetFamilies())
         .description("Titanium rocks!")
     }
+}
+
+func supportedWidgetFamilies() -> [WidgetFamily] {
+  var familes: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge]
+  
+  if #available(iOS 15.0, *) {
+    familes.append(.systemExtraLarge)
+  }
+  
+  if #available(iOS 16.0, *) {
+    familes.append(.accessoryInline)
+    familes.append(.accessoryCircular)
+    familes.append(.accessoryRectangular)
+  }
+  
+  return familes
 }
 
 struct SampleWidgetExtension_Previews: PreviewProvider {
