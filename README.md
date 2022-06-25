@@ -2,8 +2,8 @@
 
 A sample app demonstrating the WidgetKit capabilitites of Titanium in native iOS development.
 
-<img src=".github/screen1.png" width="230" /> 
-<img src=".github/screen2.png" width="230" />
+
+<img src=".github/screen1.png" width="230" /> <img src=".github/screen2.png" width="230" />
 
 ## Before you start
 
