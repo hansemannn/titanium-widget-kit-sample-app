@@ -4,7 +4,7 @@ const GROUP_IDENTIFIER = 'group.io.tidev.sample-widgetkit';
 const USER_DEFAULTS_IDENTIFIER = 'kSampleAppMyData';
 
 function saveData() {
-	const payload = { title: 'My Title', count: 1337 };
+	const payload = { title: 'Counter', count: 1337 };
 
 	// 1) Save data
 	const userDefaults = Ti.App.iOS.createUserDefaults({ suiteName: GROUP_IDENTIFIER });

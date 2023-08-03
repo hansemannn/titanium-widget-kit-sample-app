@@ -25,7 +25,7 @@ let USER_DEFAULTS_IDENTIFIER = "kSampleAppMyData"
 private func fetchData() -> MyData? {
   let defaults = UserDefaults(suiteName: GROUP_IDENTIFIER)
   
-  if let archivedData = defaults?.object(forKey: USER_DEFAULTS_IDENTIFIER) as? Data, let rawData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(archivedData) as? [String: Any],
+  if let rawData = defaults?.object(forKey: USER_DEFAULTS_IDENTIFIER) as? [String: Any],
     let rawDataJSON = try? JSONSerialization.data(withJSONObject: rawData, options: .fragmentsAllowed),
     let data = try? JSONDecoder().decode(MyData.self, from: rawDataJSON) {
     return data
@@ -39,7 +39,7 @@ struct Provider: IntentTimelineProvider {
         let data = fetchData()
         return SimpleEntry(date: Date(),
                            count: data?.count ?? 0,
-                           title: data?.title ?? "Default",
+                           title: data?.title ?? "Counter",
                            configuration: ConfigurationIntent())
     }
 
@@ -47,7 +47,7 @@ struct Provider: IntentTimelineProvider {
         let data = fetchData()
         let entry = SimpleEntry(date: Date(),
                                 count: data?.count ?? 0,
-                                title: data?.title ?? "Default",
+                                title: data?.title ?? "Counter",
                                 configuration: configuration)
         completion(entry)
     }
@@ -62,7 +62,7 @@ struct Provider: IntentTimelineProvider {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
             let entry = SimpleEntry(date: entryDate,
                                     count: data?.count ?? 0,
-                                    title: data?.title ?? "Default",
+                                    title: data?.title ?? "Counter",
                                     configuration: configuration)
             entries.append(entry)
         }
@@ -129,7 +129,7 @@ struct SampleWidgetExtension_Previews: PreviewProvider {
         let data = fetchData()
         SampleWidgetExtensionEntryView(entry: SimpleEntry(date: Date(),
                                                           count: data?.count ?? 0,
-                                                          title: data?.title ?? "Default",
+                                                          title: data?.title ?? "Counter",
                                                           configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
@@ -145,7 +145,7 @@ struct ButtonCounter: AppIntent {
         let lastData = fetchData()
 
         let defaults = UserDefaults(suiteName: GROUP_IDENTIFIER)
-        defaults?.set(["title": "Updated from Button", "count": (lastData?.count ?? 0) + 1], forKey: USER_DEFAULTS_IDENTIFIER)
+        defaults?.set(["title": "Counter", "count": (lastData?.count ?? 0) + 1], forKey: USER_DEFAULTS_IDENTIFIER)
         
         return .result()
     }
