@@ -8,6 +8,7 @@
 import WidgetKit
 import SwiftUI
 import Intents
+import AppIntents
 
 // Change to your data - this struct is just a type definition that should
 // have the same structure as your saved object in your Ti.App.iOS.UserDefaults
@@ -16,12 +17,12 @@ struct MyData: Codable {
   let count: Int
 }
 
-private func fetchData() -> MyData? {
-  // Change to your group that is assigned in your app and extension (via "Signing and Capabilities" > "App Groups"
-  // NOTE: Your app has to have the same app group and on device, your provisioning profile should include it as well
-  let GROUP_IDENTIFIER = "group.io.tidev.sample-widgetkit"
-  let USER_DEFAULTS_IDENTIFIER = "kSampleAppMyData"
+// Change to your group that is assigned in your app and extension (via "Signing and Capabilities" > "App Groups"
+// NOTE: Your app has to have the same app group and on device, your provisioning profile should include it as well
+let GROUP_IDENTIFIER = "group.io.tidev.sample-widgetkit"
+let USER_DEFAULTS_IDENTIFIER = "kSampleAppMyData"
 
+private func fetchData() -> MyData? {
   let defaults = UserDefaults(suiteName: GROUP_IDENTIFIER)
   
   if let archivedData = defaults?.object(forKey: USER_DEFAULTS_IDENTIFIER) as? Data, let rawData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(archivedData) as? [String: Any],
@@ -36,12 +37,18 @@ private func fetchData() -> MyData? {
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
         let data = fetchData()
-        return SimpleEntry(date: Date(), title: data?.title ?? "Default", configuration: ConfigurationIntent())
+        return SimpleEntry(date: Date(),
+                           count: data?.count ?? 0,
+                           title: data?.title ?? "Default",
+                           configuration: ConfigurationIntent())
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let data = fetchData()
-        let entry = SimpleEntry(date: Date(), title: data?.title ?? "Default", configuration: configuration)
+        let entry = SimpleEntry(date: Date(),
+                                count: data?.count ?? 0,
+                                title: data?.title ?? "Default",
+                                configuration: configuration)
         completion(entry)
     }
 
@@ -53,7 +60,10 @@ struct Provider: IntentTimelineProvider {
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, title: data?.title ?? "Default", configuration: configuration)
+            let entry = SimpleEntry(date: entryDate,
+                                    count: data?.count ?? 0,
+                                    title: data?.title ?? "Default",
+                                    configuration: configuration)
             entries.append(entry)
         }
 
@@ -64,6 +74,7 @@ struct Provider: IntentTimelineProvider {
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
+    let count: Int
     let title: String
     let configuration: ConfigurationIntent
 }
@@ -74,6 +85,12 @@ struct SampleWidgetExtensionEntryView : View {
     var body: some View {
         Text(entry.title).fontWeight(.bold)
         Text(entry.date, style: .time)
+        Text("\(entry.count)")
+        if #available(iOS 17.0, *) {
+          Button(intent: ButtonCounter()) {
+              Image(systemName: "bolt.fill")
+          }
+        }
     }
 }
 
@@ -110,7 +127,26 @@ func supportedWidgetFamilies() -> [WidgetFamily] {
 struct SampleWidgetExtension_Previews: PreviewProvider {
     static var previews: some View {
         let data = fetchData()
-        SampleWidgetExtensionEntryView(entry: SimpleEntry(date: Date(), title: data?.title ?? "Default", configuration: ConfigurationIntent()))
+        SampleWidgetExtensionEntryView(entry: SimpleEntry(date: Date(),
+                                                          count: data?.count ?? 0,
+                                                          title: data?.title ?? "Default",
+                                                          configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
+    }
+}
+
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
+struct ButtonCounter: AppIntent {
+    
+    static var title: LocalizedStringResource = "Count Incrementer"
+    static var description = IntentDescription("Increments the given count!")
+    
+    func perform() async throws -> some IntentResult {
+        let lastData = fetchData()
+
+        let defaults = UserDefaults(suiteName: GROUP_IDENTIFIER)
+        defaults?.set(["title": "Updated from Button", "count": (lastData?.count ?? 0) + 1], forKey: USER_DEFAULTS_IDENTIFIER)
+        
+        return .result()
     }
 }
