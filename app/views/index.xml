@@ -1,7 +1,11 @@
 <Alloy>
 	<NavigationWindow>
-		<Window title="Widget Kit Sample App">
-			<Button title="Save data to widget" onClick="saveData" />
+		<Window title="Widget Kit Sample App" onFocus="onWindowFocus">
+			<View height="160" width="200" borderRadius="15" backgroundColor="#f0f0f0" layout="vertical">
+				<Label font.fontWeight="bold" font.fontSize="18" top="30" id="title" />
+				<Label id="count" />
+				<Button title="Increment counter" top="20" onClick="saveData" />
+			</View>
 		</Window>
 	</NavigationWindow>
 </Alloy>
