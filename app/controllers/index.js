@@ -11,6 +11,12 @@ function onWindowFocus() {
 
 function refreshUI() {
 	const data = userDefaults.getObject(USER_DEFAULTS_IDENTIFIER);
+	if (!data) {
+		$.warning.text = 'No App Group configured: Setup your provisioning profiles and app group first.';
+		return;
+	} else {
+		$.warning.text = '';
+	}
 
 	$.title.text = data.title;
 	$.count.text = `${data.count}`;

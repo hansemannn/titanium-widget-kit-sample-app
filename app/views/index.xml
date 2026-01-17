@@ -6,6 +6,7 @@
 				<Label id="count" />
 				<Button title="Increment counter" top="20" onClick="saveData" />
 			</View>
+			<Label id="warning" bottom="100" width="300" textAlign="center" />
 		</Window>
 	</NavigationWindow>
 </Alloy>
